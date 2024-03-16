@@ -3,6 +3,7 @@ import pandas as pd
 import csv
 import datetime
 
+
 def formatting(path, col):
     delim = None
     with open(path, newline='') as csvfile:
@@ -12,7 +13,8 @@ def formatting(path, col):
     if df.dtypes[col] != 'int64':
         print("Specified column does not have the supported data type : int64")
         return 0
-    df[col] = df[col].apply(lambda x: datetime.datetime.fromtimestamp(x//1000).strftime('%Y-%m-%d %H:%M:%S'))
+    df[col] = pd.to_datetime(df[col], unit='ms')
+    # df[col] = df[col].apply(lambda x: datetime.datetime.fromtimestamp(x//1000).strftime('%Y-%m-%d %H:%M:%S'))
     return df
 
 def joining(path, col):
@@ -70,6 +72,10 @@ def filtering(path, b):
                 ndf = curr.loc[curr[col] == int(op)]
             elif df.dtypes[col] == 'float64':
                 ndf = curr.loc[curr[col] == float(op)]
+            elif 'datetime64' in df.dtypes[col]:
+                curr[col] = pd.to_datetime(curr[col])
+                nd = pd.Timestamp(op)
+                ndf = curr.loc[curr[col] == nd]
         elif '!=' in con:
             if curr.dtypes[col] == 'object':
                 ndf = curr.loc[curr[col] != op]
@@ -77,6 +83,10 @@ def filtering(path, b):
                 ndf = curr.loc[curr[col] != int(op)]
             elif curr.dtypes[col] == 'float64':
                 ndf = curr.loc[curr[col] != float(op)]
+            elif 'datetime64' in df.dtypes[col]:
+                curr[col] = pd.to_datetime(curr[col])
+                nd = pd.Timestamp(op)
+                ndf = curr.loc[curr[col] != nd]
         elif '>' in con:
             # ndf = df
             if '>=' in con:
@@ -86,6 +96,10 @@ def filtering(path, b):
                     ndf = curr.loc[curr[col] >= int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] >= float(op)]
+                elif 'datetime64' in df.dtypes[col]:
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] >= nd]
             else:
                 if curr.dtypes[col] == 'object':
                     print('Cannot perform ">" operation for non numeric data type')
@@ -93,6 +107,10 @@ def filtering(path, b):
                     ndf = curr.loc[curr[col] > int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] > float(op)]
+                elif 'datetime64' in df.dtypes[col]:
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] > nd]
         elif '<' in con:
             if '<=' in con:
                 if curr.dtypes[col] == 'object':
@@ -101,6 +119,10 @@ def filtering(path, b):
                     ndf = curr.loc[curr[col] <= int(op)]
                 elif df.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] <= float(op)]
+                elif 'datetime64' in df.dtypes[col]:
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] <= nd]
             else:
                 if curr.dtypes[col] == 'object':
                     print('Cannot perform "<" operation for non numeric data type')
@@ -108,6 +130,10 @@ def filtering(path, b):
                     ndf = curr.loc[curr[col] < int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] < float(op)]
+                elif 'datetime64' in df.dtypes[col]:
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] < nd]
         else:
             'No valid operator found. Valid operators : ==, !=, >, >=, <, <='
             return 0
@@ -136,8 +162,11 @@ def aggregating(path, column):
 
 
 # paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
-# odf = formatting(paths[-1], 'Close Time')
-# print(odf)
+# odf = formatting(paths[-1], 'Open Time')
+# temp = odf['Open Time']
+# nd = pd.Timestamp('2021-01-03')
+# ndf = temp.loc[temp < nd]
+# print(ndf)
 # path = 'Testing/data.tsv'
 # bo = ['numVotes > 1000', 'averageRating >= 9.0']
 # odf = filtering(path, bo)
