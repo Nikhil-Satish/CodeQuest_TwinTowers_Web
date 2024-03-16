@@ -1,5 +1,6 @@
 import typer
 from csv_test import filtering
+from csv_test import aggregating
 
 app = typer.Typer()
 
@@ -18,6 +19,13 @@ def goodbye():
 def filter(filename:str, conditions:list[str]):
     df = filtering(filename, conditions)
     print(df)
+
+@app.command()
+def aggregate(filepath:str, column:str):
+    aggregating(filepath, column)
+    # df = filtering(filename, conditions)
+    # print(df)
+    pass
 
     
 if __name__ == "__main__":

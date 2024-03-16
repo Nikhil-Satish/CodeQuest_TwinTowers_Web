@@ -76,6 +76,17 @@ def filtering(path, b):
         curr = ndf
     return ndf
 
+def aggregating(path, column):
+    if path[len(path) - 3:] == 'csv':
+        df = pd.read_csv(path)
+    else:
+        df = pd.read_csv(path, sep='\t')
+    # df = pd.read_csv(path)
+    total = df[column].sum()
+    average = df[column].mean()
+    mini = df[column].min()
+    mini = df[column].max()
+    print("Sum:", total, "\tAveage", average,"\tMinimum", mini)
 
 # bo = ['numVotes > 100', 'averageRating >= 9.0']
 # odf = filtering(paths[-1], bo)
