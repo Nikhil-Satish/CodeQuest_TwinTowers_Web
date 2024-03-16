@@ -1,11 +1,14 @@
 # import sys
 import pandas as pd
+import csv
+
 
 def filtering(path, b):
-    if path[len(path) - 3:] == 'csv':
-        df = pd.read_csv(path)
-    else:
-        df = pd.read_csv(path, sep='\t')
+    delim = None
+    with open(path, newline='') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        delim = dialect.delimiter
+    df = pd.read_csv(path, sep=delim)
     curr = df
     ndf = curr
     operators = ['=', "!", ">", "<"]
@@ -88,6 +91,7 @@ def aggregating(path, column):
     mini = df[column].max()
     print("Sum:", total, "\tAveage", average,"\tMinimum", mini)
 
-# bo = ['numVotes > 100', 'averageRating >= 9.0']
-# odf = filtering(paths[-1], bo)
-# print(odf)
+path = 'data.tsv'
+bo = ['numVotes > 1000', 'averageRating >= 9.0']
+odf = filtering(path, bo)
+print(odf)
