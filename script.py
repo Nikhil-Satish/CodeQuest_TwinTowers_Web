@@ -1,6 +1,5 @@
 import typer
-from csv_test import filtering
-from csv_test import aggregating
+from csv_test import filtering, aggregating, joining
 
 app = typer.Typer()
 
@@ -23,10 +22,13 @@ def filter(filename:str, conditions:list[str]):
 @app.command()
 def aggregate(filepath:str, column:str):
     aggregating(filepath, column)
-    # df = filtering(filename, conditions)
-    # print(df)
-    pass
 
-    
+@app.command()
+def join(column:str, paths:list[str]):
+    # aggregating(filepath1, column)
+    # paths = [filepath1, filepath2]
+    df = joining(paths, column)
+    print(df)
+
 if __name__ == "__main__":
     app()

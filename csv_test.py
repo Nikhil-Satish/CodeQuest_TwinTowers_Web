@@ -116,16 +116,16 @@ def filtering(path, b):
 
 
 def aggregating(path, column):
-    if path[len(path) - 3:] == 'csv':
-        df = pd.read_csv(path)
-    else:
-        df = pd.read_csv(path, sep='\t')
-    # df = pd.read_csv(path)
+    delim = None
+    with open(path, newline='') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        delim = dialect.delimiter
+    df = pd.read_csv(path, sep=delim)
     total = df[column].sum()
     average = df[column].mean()
     mini = df[column].min()
-    mini = df[column].max()
-    print("Sum:", total, "\tAveage", average,"\tMinimum", mini)
+    maxi = df[column].max()
+    print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
 
 # pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
 # pd2 = [[1, 6.2], [2, 5.7], [3, 5.7], [4, 5.8]]
