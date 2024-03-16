@@ -1,5 +1,5 @@
 import typer
-from csv_test import filtering, aggregating, joining
+from csv_test import filtering, aggregating, joining, formatting
 import pandas as pd
 import csv
 
@@ -31,8 +31,23 @@ def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
     df.to_csv('output.csv', sep=delim, quoting=quoting)
 
 @app.command()
-def aggregate(filepath:str, column:str):
-    aggregating(filepath, column)
+def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
+    df = aggregating(filepath, column)
+    df = pd.DataFrame(df)
+    delim = format_delim(delim)
+
+    df.to_csv('output.csv', sep=delim, quoting=quoting)
+    
+
+@app.command()
+def format(filepath:str, column:str, delim:str=',', quoting:int=0):
+    # aggregating(filepath, column)
+    df = formatting(filepath, column)
+    print(df)
+    df = pd.DataFrame(df)
+    delim = format_delim(delim)
+
+    df.to_csv('output.csv', sep=delim, quoting=quoting)
 
 @app.command()
 def join(column:str, paths:list[str], delim:str=',', quoting:int=0):

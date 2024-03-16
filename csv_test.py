@@ -151,7 +151,12 @@ def aggregating(path, column):
     average = df[column].mean()
     mini = df[column].min()
     maxi = df[column].max()
-    print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
+    # df2['Sum'] = sum
+    data = [[total, average, mini, maxi]]
+    df2 = pd.DataFrame(data, columns=['Sum','Average', 'Minimum', 'Maximum'])
+
+    # print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
+    return df2
 
 # pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
 # pd2 = [[1, 6.2], [2, 5.7], [3, 5.7], [4, 5.8]]
