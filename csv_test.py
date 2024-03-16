@@ -1,7 +1,19 @@
 # import sys
 import pandas as pd
 import csv
+import datetime
 
+def formatting(path, col):
+    delim = None
+    with open(path, newline='') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        delim = dialect.delimiter
+    df = pd.read_csv(path, sep=delim)
+    if df.dtypes[col] != 'int64':
+        print("Specified column does not have the supported data type : int64")
+        return 0
+    df[col] = df[col].apply(lambda x: datetime.datetime.fromtimestamp(x//1000).strftime('%Y-%m-%d %H:%M:%S'))
+    return df
 
 def joining(path, col):
     if len(path) < 2:
@@ -121,8 +133,10 @@ def aggregating(path, column):
 # d1 = pd.DataFrame(pd1, columns=['ID', 'Name', 'Age'])
 # d2 = pd.DataFrame(pd1, columns=['ID', 'Height'])
 # d3 = pd.DataFrame(pd1, columns=['ID', 'Weight'])
-# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv']
-# odf = joining(paths, 'ID')
+
+
+# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
+# odf = formatting(paths[-1], 'Close Time')
 # print(odf)
 # path = 'Testing/data.tsv'
 # bo = ['numVotes > 1000', 'averageRating >= 9.0']
