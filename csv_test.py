@@ -80,18 +80,18 @@ def filtering(path, b):
     return ndf
 
 def aggregating(path, column):
-    if path[len(path) - 3:] == 'csv':
-        df = pd.read_csv(path)
-    else:
-        df = pd.read_csv(path, sep='\t')
-    # df = pd.read_csv(path)
+    delim = None
+    with open(path, newline='') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        delim = dialect.delimiter
+    df = pd.read_csv(path, sep=delim)
     total = df[column].sum()
     average = df[column].mean()
     mini = df[column].min()
-    mini = df[column].max()
-    print("Sum:", total, "\tAveage", average,"\tMinimum", mini)
+    maxi = df[column].max()
+    print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
 
-path = 'data.tsv'
-bo = ['numVotes > 1000', 'averageRating >= 9.0']
-odf = filtering(path, bo)
-print(odf)
+# path = 'data.tsv'
+# bo = ['numVotes > 1000', 'averageRating >= 9.0']
+# odf = filtering(path, bo)
+# print(odf)
