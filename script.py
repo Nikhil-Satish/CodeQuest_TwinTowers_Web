@@ -1,4 +1,5 @@
 import typer
+from csv_test import filtering
 
 app = typer.Typer()
 
@@ -15,8 +16,11 @@ def goodbye():
 
 @app.command()
 def filter(filename:str, conditions:list[str]):
-    print(filename)
-    print(conditions)
+    # print(filename)
+    # print(conditions)
+    df = filtering(filename, conditions)
+    print(df)
+
     
 if __name__ == "__main__":
     app()
