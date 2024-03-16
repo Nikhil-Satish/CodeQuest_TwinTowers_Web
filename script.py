@@ -16,8 +16,6 @@ def goodbye():
 
 @app.command()
 def filter(filename:str, conditions:list[str]):
-    # print(filename)
-    # print(conditions)
     df = filtering(filename, conditions)
     print(df)
 

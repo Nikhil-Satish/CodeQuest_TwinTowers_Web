@@ -1,27 +1,6 @@
 # import sys
 import pandas as pd
 
-# C:\Users\prath\PycharmProjects\IT414\Lab2\dataset.csv
-# C:\Users\prath\PycharmProjects\IT414\Lab4\201IT243_PrathamPatel_Dataset.csv
-# C:\Users\prath\PycharmProjects\IT414\Lab5\dataset.csv
-
-# n_args = len(sys.argv)
-paths = ['C:\\Users\\prath\\PycharmProjects\\IT414\\Lab2\\dataset.csv', 'C:\\Users\\prath\\PycharmProjects\\IT414'
-                                                                        '\\Lab4\\201IT243_PrathamPatel_Dataset.csv',
-         'C:\\Users\\prath\\PycharmProjects\\IT414\\Lab5\\dataset.csv', 'C:\\Users\\prath\\PycharmProjects\\Hackathon'
-                                                                        '\\data.tsv']
-dfs = []
-
-for ind in range(len(paths)):
-    tdf = pd.read_csv(paths[ind])
-    dfs.append(tdf)
-    # print(f"Arg {i + 1} : {sys.argv[i + 1]}")
-
-# for i in range(len(dfs)):
-#     # sys.stdout.write("Hello")
-#     print(dfs[i].head())
-
-
 def filtering(path, b):
     if path[len(path) - 3:] == 'csv':
         df = pd.read_csv(path)
@@ -98,6 +77,6 @@ def filtering(path, b):
     return ndf
 
 
-bo = ['numVotes > 100', 'averageRating >= 9.0']
-odf = filtering(paths[-1], bo)
-print(odf)
+# bo = ['numVotes > 100', 'averageRating >= 9.0']
+# odf = filtering(paths[-1], bo)
+# print(odf)
