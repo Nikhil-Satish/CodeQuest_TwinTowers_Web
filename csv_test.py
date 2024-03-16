@@ -3,6 +3,29 @@ import pandas as pd
 import csv
 
 
+def joining(path, col):
+    if len(path) < 2:
+        print("Minimum 2 CSV file-paths required.")
+        return 0
+    delim = None
+    with open(path[0], newline='') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        delim = dialect.delimiter
+    df1 = pd.read_csv(path[0], sep=delim)
+    df2 = pd.read_csv(path[1], sep=delim)
+    if col not in df1 or col not in df2:
+        print("Join column not found in one of the CSVs")
+        return 0
+    ndf = pd.merge(df1, df2, on=col, how='inner')
+    for i in range(2, len(path)):
+        df3 = pd.read_csv(path[i], sep=delim)
+        if col not in df3:
+            print("Join column not found in one of the CSVs")
+            return 0
+        ndf = pd.merge(ndf, df3, on=col, how='inner')
+    return ndf
+
+
 def filtering(path, b):
     delim = None
     with open(path, newline='') as csvfile:
@@ -79,6 +102,7 @@ def filtering(path, b):
         curr = ndf
     return ndf
 
+
 def aggregating(path, column):
     delim = None
     with open(path, newline='') as csvfile:
@@ -91,7 +115,16 @@ def aggregating(path, column):
     maxi = df[column].max()
     print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
 
-# path = 'data.tsv'
+# pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
+# pd2 = [[1, 6.2], [2, 5.7], [3, 5.7], [4, 5.8]]
+# pd3 = [[1, 75], [2, 64], [3, 72], [4, 70]]
+# d1 = pd.DataFrame(pd1, columns=['ID', 'Name', 'Age'])
+# d2 = pd.DataFrame(pd1, columns=['ID', 'Height'])
+# d3 = pd.DataFrame(pd1, columns=['ID', 'Weight'])
+# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv']
+# odf = joining(paths, 'ID')
+# print(odf)
+# path = 'Testing/data.tsv'
 # bo = ['numVotes > 1000', 'averageRating >= 9.0']
 # odf = filtering(path, bo)
 # print(odf)
