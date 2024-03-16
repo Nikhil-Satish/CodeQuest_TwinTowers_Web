@@ -24,9 +24,9 @@ def aggregate(filepath:str, column:str):
     aggregating(filepath, column)
 
 @app.command()
-def join(filepath1:str, filepath2:str, column:str):
+def join(column:str, paths:list[str]):
     # aggregating(filepath1, column)
-    paths = [filepath1, filepath2]
+    # paths = [filepath1, filepath2]
     df = joining(paths, column)
     print(df)
 
