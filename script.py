@@ -47,7 +47,7 @@ def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
     df.to_csv('output.csv', sep=delim, quoting=quoting)
 
 @app.command()
-def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
+def aggregate(filepath:str, columns:list[str], delim:str=',', quoting:int=0):
     """
     Perform aggregation operations such as SUM, AVERAGE, MINIMUM, MAXIMUM for a particular column
     """
@@ -59,7 +59,7 @@ def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
         print("Incorrect file format specified, please add a pandas/csv supported file")
         return
 
-    df = aggregating(filepath, column)
+    df = aggregating(filepath, columns)
     df = pd.DataFrame(df)
     delim = format_delim(delim)
 
@@ -67,7 +67,7 @@ def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
     
 
 @app.command()
-def format(filepath:str, column:str, delim:str=',', quoting:int=0):
+def format(filepath:str, columns:list[str], delim:str=',', quoting:int=0):
     """
     Formats the data-time column to the standard UTC format
     """
@@ -79,7 +79,7 @@ def format(filepath:str, column:str, delim:str=',', quoting:int=0):
         print("Incorrect file format specified, please add a pandas/csv supported file")
         return
     
-    df = formatting(filepath, column)
+    df = formatting(filepath, columns)
     print(df)
     df = pd.DataFrame(df)
     delim = format_delim(delim)
