@@ -49,11 +49,30 @@ def filtering(path, b):
     curr = df
     ndf = curr
     operators = ['=', "!", ">", "<"]
-
+    val = ['==', "!=", ">=", "<=", ">", "<"]
     for con in b:
         col = ''
         op = ''
         mode = 'lhs'
+        o_ind = len(con)
+        for o in operators:
+            if o in con:
+                o_ind = con.index(o)
+                break
+        if o_ind == len(con):
+            print('No valid operators found. Valid operators : ==, !=, >, >=, <, <=')
+            return 0
+        terms = con.split(' ')
+        t_ind = len(terms)
+        for t in terms:
+            if t in val:
+                t_ind = terms.index(t)
+                # print(f'here {t}, {t_ind}')
+                break
+        alt_col = ' '.join(terms[:t_ind])
+        alt_op = ' '.join(terms[t_ind+1:])
+        # print(fin, o_ind, len(con), terms[:o_ind])
+        print(col, op)
         for c in con:
             if c not in operators:
                 if c != ' ' and mode == 'lhs':
@@ -63,79 +82,117 @@ def filtering(path, b):
             else:
                 mode = 'rhs'
                 continue
-        # print(con, col, op)
+        if col not in curr:
+            col = alt_col
+        if col not in curr:
+            print("Specified column not present in specified CSV")
+            return 0
+            # print(con, col, op)
+        if curr.dtypes[col] == 'int64':
+            try:
+                op = int(op)
+            except ValueError:
+                print('Incompatible operand with column data type int64')
+                return 0
+        if curr.dtypes[col] == 'float64':
+            try:
+                op = float(op)
+            except ValueError:
+                print('Incompatible operand with column data type float64')
+                return 0
         if '==' in con:
             # print('here')
             if curr.dtypes[col] == 'object':
+                # curr[col] = pd.to_datetime(curr[col])
+                # nd = pd.Timestamp(op)
+                # ndf = curr.loc[curr[col] == nd]
                 ndf = curr.loc[curr[col] == op]
-            elif df.dtypes[col] == 'int64':
+            elif curr.dtypes[col] == 'int64':
                 ndf = curr.loc[curr[col] == int(op)]
-            elif df.dtypes[col] == 'float64':
+            elif curr.dtypes[col] == 'float64':
                 ndf = curr.loc[curr[col] == float(op)]
-            elif 'datetime64' in df.dtypes[col]:
-                curr[col] = pd.to_datetime(curr[col])
-                nd = pd.Timestamp(op)
-                ndf = curr.loc[curr[col] == nd]
+
         elif '!=' in con:
             if curr.dtypes[col] == 'object':
+                # curr[col] = pd.to_datetime(curr[col])
+                # nd = pd.Timestamp(op)
+                # ndf = curr.loc[curr[col] != nd]
                 ndf = curr.loc[curr[col] != op]
             elif curr.dtypes[col] == 'int64':
                 ndf = curr.loc[curr[col] != int(op)]
             elif curr.dtypes[col] == 'float64':
                 ndf = curr.loc[curr[col] != float(op)]
-            elif 'datetime64' in df.dtypes[col]:
-                curr[col] = pd.to_datetime(curr[col])
-                nd = pd.Timestamp(op)
-                ndf = curr.loc[curr[col] != nd]
+
         elif '>' in con:
             # ndf = df
+            if curr[col].dtypes == 'object':
+                try:
+                    curr[col] = pd.to_datetime(curr[col])
+                except ValueError as e:
+                    print(f"Error converting '{col}' to datetime: {e}")
+                    return 0
+                try:
+                    nd = pd.Timestamp(op)
+                except ValueError as e:
+                    print(f"Error converting '{op}' to datetime: {e}")
+                    return 0
+
             if '>=' in con:
                 if curr.dtypes[col] == 'object':
-                    print('Cannot perform ">=" operation for non numeric data type')
+                    # curr[col] = pd.to_datetime(curr[col])
+                    # nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] >= nd]
+                    # print('Cannot perform ">=" operation for non numeric data type')
                 elif curr.dtypes[col] == 'int64':
                     ndf = curr.loc[curr[col] >= int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] >= float(op)]
-                elif 'datetime64' in df.dtypes[col]:
-                    curr[col] = pd.to_datetime(curr[col])
-                    nd = pd.Timestamp(op)
-                    ndf = curr.loc[curr[col] >= nd]
             else:
                 if curr.dtypes[col] == 'object':
-                    print('Cannot perform ">" operation for non numeric data type')
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] > nd]
+                    # print('Cannot perform ">" operation for non numeric data type')
                 elif curr.dtypes[col] == 'int64':
                     ndf = curr.loc[curr[col] > int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] > float(op)]
-                elif 'datetime64' in df.dtypes[col]:
-                    curr[col] = pd.to_datetime(curr[col])
-                    nd = pd.Timestamp(op)
-                    ndf = curr.loc[curr[col] > nd]
+
         elif '<' in con:
+            if curr[col].dtypes == 'object':
+                try:
+                    curr[col] = pd.to_datetime(curr[col])
+                except ValueError as e:
+                    print(f"Error converting '{col}' to datetime: {e}")
+                    return 0
+                try:
+                    nd = pd.Timestamp(op)
+                except ValueError as e:
+                    print(f"Error converting '{op}' to datetime: {e}")
+                    return 0
             if '<=' in con:
                 if curr.dtypes[col] == 'object':
-                    print('Cannot perform "<=" operation for non numeric data type')
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] <= nd]
+                    # print('Cannot perform "<=" operation for non numeric data type')
                 elif curr.dtypes[col] == 'int64':
                     ndf = curr.loc[curr[col] <= int(op)]
                 elif df.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] <= float(op)]
-                elif 'datetime64' in df.dtypes[col]:
-                    curr[col] = pd.to_datetime(curr[col])
-                    nd = pd.Timestamp(op)
-                    ndf = curr.loc[curr[col] <= nd]
+
             else:
                 if curr.dtypes[col] == 'object':
-                    print('Cannot perform "<" operation for non numeric data type')
+                    curr[col] = pd.to_datetime(curr[col])
+                    nd = pd.Timestamp(op)
+                    ndf = curr.loc[curr[col] < nd]
+                    # print('Cannot perform "<" operation for non numeric data type')
                 elif curr.dtypes[col] == 'int64':
                     ndf = curr.loc[curr[col] < int(op)]
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] < float(op)]
-                elif 'datetime64' in df.dtypes[col]:
-                    curr[col] = pd.to_datetime(curr[col])
-                    nd = pd.Timestamp(op)
-                    ndf = curr.loc[curr[col] < nd]
         else:
-            'No valid operator found. Valid operators : ==, !=, >, >=, <, <='
+            print('No valid operator found. Valid operators : ==, !=, >, >=, <, <=')
             return 0
         curr = ndf
     return ndf
@@ -151,7 +208,7 @@ def aggregating(path, column):
     average = df[column].mean()
     mini = df[column].min()
     maxi = df[column].max()
-    print("Sum:", total, "\tAverage", average,"\tMinimum", mini, "\tMaximum ",maxi)
+    print("Sum:", total, "\tAverage", average, "\tMinimum", mini, "\tMaximum ", maxi)
 
 # pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
 # pd2 = [[1, 6.2], [2, 5.7], [3, 5.7], [4, 5.8]]
@@ -164,10 +221,11 @@ def aggregating(path, column):
 # paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
 # odf = formatting(paths[-1], 'Open Time')
 # temp = odf['Open Time']
+# temp.to_csv('Testing/formatted.csv')
 # nd = pd.Timestamp('2021-01-03')
 # ndf = temp.loc[temp < nd]
 # print(ndf)
-# path = 'Testing/data.tsv'
-# bo = ['numVotes > 1000', 'averageRating >= 9.0']
-# odf = filtering(path, bo)
-# print(odf)
+path = 'Testing/join1.csv'
+bo = ['ID <= Pratham']
+odf = filtering(path, bo)
+print(odf)
