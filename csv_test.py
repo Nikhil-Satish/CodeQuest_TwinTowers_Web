@@ -246,9 +246,9 @@ def aggregating(path, column):
 # d3 = pd.DataFrame(pd1, columns=['ID', 'Weight'])
 
 
-paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
-odf = formatting(paths[-1], 'Name')
-print(odf)
+# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
+# odf = formatting(paths[-1], 'Name')
+# print(odf)
 # temp = odf['Open Time']
 # temp.to_csv('Testing/formatted.csv')
 # nd = pd.Timestamp('2021-01-03')

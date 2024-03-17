@@ -3,7 +3,12 @@ from csv_test import filtering, aggregating, joining, formatting
 import pandas as pd
 import csv
 
-app = typer.Typer()
+helper_str = """
+    This is a command line tool for applying transformations to csv files. 4 transformation functionalities are provided as mentioned in under Commands.\n 
+    Take a look at the list and find their usage using --help for each command.
+    The tool supports autocompletion. 
+    """
+app = typer.Typer(help=helper_str)
 
 def format_delim(delim):
     if len(delim) ==1 or len(delim) ==2:
@@ -23,6 +28,9 @@ def format_delim(delim):
 
 @app.command()
 def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
+    """
+    Filter the input csv file based on the conditions entered as arguments
+    """
     if filename == '':
         print("No file has been chosen")
         return
@@ -40,6 +48,9 @@ def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
 
 @app.command()
 def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
+    """
+    Perform aggregation operations such as SUM, AVERAGE, MINIMUM, MAXIMUM for a particular column
+    """
     if filepath == '':
         print("No file has been chosen")
         return
@@ -57,7 +68,9 @@ def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
 
 @app.command()
 def format(filepath:str, column:str, delim:str=',', quoting:int=0):
-    # aggregating(filepath, column)
+    """
+    Formats the data-time column to the standard UTC format
+    """
     if filepath == '':
         print("No file has been chosen")
         return
@@ -75,6 +88,9 @@ def format(filepath:str, column:str, delim:str=',', quoting:int=0):
 
 @app.command()
 def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
+    """
+    Join 2 or more csv files having a common column
+    """
     if len(paths) == 0:
         print("No file path specified")
         return
@@ -94,4 +110,7 @@ def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
 
 
 if __name__ == "__main__":
+    """
+    Take a look at the list of commands and and find their usage using --help for each command
+    """
     app()
