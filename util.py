@@ -110,13 +110,31 @@ def filtering(path, b):
             # print(con, col, op)
         if curr.dtypes[col] == 'int64':
             try:
-                op = int(op)
+                try:
+                    pd.Timestamp(op)
+                    is_date = True
+                    # print(f'Entered {is_date}')
+                except ValueError as e:
+                    is_date = False
+                    # print(f"Wa converting '{op}' to datetime: {e}")
+                    # return 0
+                if not is_date:
+                    # print('Entered sdkfr')
+                    op = int(op)
             except ValueError:
                 print('Incompatible operand with column data type int64')
                 return 0
         if curr.dtypes[col] == 'float64':
             try:
-                op = float(op)
+                try:
+                    pd.Timestamp(op)
+                    is_date = True
+                except ValueError as e:
+                    is_date = False
+                    # print(f"Wa converting '{op}' to datetime: {e}")
+                    # return 0
+                if not is_date:
+                    op = float(op)
             except ValueError:
                 print('Incompatible operand with column data type float64')
                 return 0
@@ -158,9 +176,11 @@ def filtering(path, b):
                     return 0
 
             if '>=' in con:
-                if curr.dtypes[col] == 'object':
+                # print(curr.dtypes[col])
+                if curr.dtypes[col] == 'object' or 'datetime64[ns]' == curr.dtypes[col]:
                     # curr[col] = pd.to_datetime(curr[col])
                     # nd = pd.Timestamp(op)
+                    # print(curr[col], nd)
                     ndf = curr.loc[curr[col] >= nd]
                     # print('Cannot perform ">=" operation for non numeric data type')
                 elif curr.dtypes[col] == 'int64':
@@ -168,7 +188,7 @@ def filtering(path, b):
                 elif curr.dtypes[col] == 'float64':
                     ndf = curr.loc[curr[col] >= float(op)]
             else:
-                if curr.dtypes[col] == 'object':
+                if curr.dtypes[col] == 'object' or 'datetime64[ns]' == curr.dtypes[col]:
                     curr[col] = pd.to_datetime(curr[col])
                     nd = pd.Timestamp(op)
                     ndf = curr.loc[curr[col] > nd]
@@ -191,7 +211,7 @@ def filtering(path, b):
                     print(f"Error converting '{op}' to datetime: {e}")
                     return 0
             if '<=' in con:
-                if curr.dtypes[col] == 'object':
+                if curr.dtypes[col] == 'object' or 'datetime64[ns]' == curr.dtypes[col]:
                     curr[col] = pd.to_datetime(curr[col])
                     nd = pd.Timestamp(op)
                     ndf = curr.loc[curr[col] <= nd]
@@ -202,7 +222,7 @@ def filtering(path, b):
                     ndf = curr.loc[curr[col] <= float(op)]
 
             else:
-                if curr.dtypes[col] == 'object':
+                if curr.dtypes[col] == 'object' or 'datetime64[ns]' == curr.dtypes[col]:
                     curr[col] = pd.to_datetime(curr[col])
                     nd = pd.Timestamp(op)
                     ndf = curr.loc[curr[col] < nd]
@@ -241,24 +261,4 @@ def aggregating(path, columns):
     ndf = pd.DataFrame(data)
     return ndf
 
-# pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
-# pd2 = [[1, 6.2], [2, 5.7], [3, 5.7], [4, 5.8]]
-# pd3 = [[1, 75], [2, 64], [3, 72], [4, 70]]
-# d1 = pd.DataFrame(pd1, columns=['ID', 'Name', 'Age'])
-# d2 = pd.DataFrame(pd1, columns=['ID', 'Height'])
-# d3 = pd.DataFrame(pd1, columns=['ID', 'Weight'])
 
-
-# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
-# cols = ['Open Time', 'Close Time']
-# odf = formatting(paths[-1], cols)
-# print(odf[['Open Time', 'Close Time']])
-# temp = odf['Open Time']
-# temp.to_csv('Testing/formatted.csv')
-# nd = pd.Timestamp('2021-01-03')
-# ndf = temp.loc[temp < nd]
-# print(ndf)
-# path = 'Testing/formatted.csv'
-# bo = ['Open Time <= 2021']
-# odf = filtering(path, bo)
-# print(odf)
