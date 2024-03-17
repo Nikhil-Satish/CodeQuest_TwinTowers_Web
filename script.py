@@ -1,4 +1,5 @@
 import typer
+# import csv_test
 from csv_test import filtering, aggregating, joining, formatting
 import pandas as pd
 import csv
@@ -110,7 +111,4 @@ def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
 
 
 if __name__ == "__main__":
-    """
-    Take a look at the list of commands and and find their usage using --help for each command
-    """
     app()
