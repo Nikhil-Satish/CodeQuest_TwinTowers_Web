@@ -1,2 +1,4 @@
 typer==0.4.0
 python-csv==0.0.13
+pandas==2.0.0
+sqlalchemy==2.0.28
