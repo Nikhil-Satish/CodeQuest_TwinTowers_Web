@@ -1,7 +1,6 @@
 # import sys
 import pandas as pd
 import csv
-import datetime
 
 
 def formatting(path, col):
@@ -10,16 +9,25 @@ def formatting(path, col):
         dialect = csv.Sniffer().sniff(csvfile.read(1024))
         delim = dialect.delimiter
     df = pd.read_csv(path, sep=delim)
+    if col not in df:
+        print("Specified column not present in specified CSV")
+        return 0
     if df.dtypes[col] != 'int64':
         print("Specified column does not have the supported data type : int64")
         return 0
-    df[col] = pd.to_datetime(df[col], unit='ms')
+    try:
+        df[col] = pd.to_datetime(df[col], unit='ms')
+    except ValueError as e:
+        print(f"Error converting '{col}' to datetime: {e}")
+        return 0
+    # df[col] = pd.to_datetime(df[col], unit='ms')
     # df[col] = df[col].apply(lambda x: datetime.datetime.fromtimestamp(x//1000).strftime('%Y-%m-%d %H:%M:%S'))
     return df
 
+
 def joining(path, col):
     if len(path) < 2:
-        print("Minimum 2 CSV file-paths required.")
+        print("Minimum 2 CSV file-paths required for join operation.")
         return 0
     delim = None
     with open(path[0], newline='') as csvfile:
@@ -30,13 +38,25 @@ def joining(path, col):
     if col not in df1 or col not in df2:
         print("Join column not found in one of the CSVs")
         return 0
-    ndf = pd.merge(df1, df2, on=col, how='inner')
+    try:
+        # Perform inner join on column 'A'
+        ndf = pd.merge(df1, df2, on=col, how='inner')
+    except Exception as e:
+        print(f"Error during inner join: {e}")
+        return 0
+    # ndf = pd.merge(df1, df2, on=col, how='inner')
     for i in range(2, len(path)):
         df3 = pd.read_csv(path[i], sep=delim)
         if col not in df3:
             print("Join column not found in one of the CSVs")
             return 0
-        ndf = pd.merge(ndf, df3, on=col, how='inner')
+        try:
+            # Perform inner join on column 'A'
+            ndf = pd.merge(df3, ndf, on=col, how='inner')
+        except Exception as e:
+            print(f"Error during inner join: {e}")
+            return 0
+        # ndf = pd.merge(ndf, df3, on=col, how='inner')
     return ndf
 
 
@@ -218,14 +238,15 @@ def aggregating(path, column):
 # d3 = pd.DataFrame(pd1, columns=['ID', 'Weight'])
 
 
-# paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
-# odf = formatting(paths[-1], 'Open Time')
+paths = ['Testing/join1.csv', 'Testing/join2.csv', 'Testing/Join3.csv', 'Testing/time.csv']
+odf = formatting(paths[-1], 'Name')
+print(odf)
 # temp = odf['Open Time']
 # temp.to_csv('Testing/formatted.csv')
 # nd = pd.Timestamp('2021-01-03')
 # ndf = temp.loc[temp < nd]
 # print(ndf)
-path = 'Testing/join1.csv'
-bo = ['ID <= Pratham']
-odf = filtering(path, bo)
-print(odf)
+# path = 'Testing/formatted.csv'
+# bo = ['Open Time <= 2021']
+# odf = filtering(path, bo)
+# print(odf)
