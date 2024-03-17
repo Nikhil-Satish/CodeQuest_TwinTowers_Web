@@ -224,10 +224,18 @@ def aggregating(path, column):
         dialect = csv.Sniffer().sniff(csvfile.read(1024))
         delim = dialect.delimiter
     df = pd.read_csv(path, sep=delim)
-    total = df[column].sum()
-    average = df[column].mean()
-    mini = df[column].min()
-    maxi = df[column].max()
+    if column not in df:
+        print("Specified column not present in specified CSV")
+        return 0
+    try:
+        # Attempt to calculate the sum of each column
+        total = df[column].sum()
+        average = df[column].mean()
+        mini = df[column].min()
+        maxi = df[column].max()
+    except Exception as e:
+        print(f"Unsupported datatypes for arithmetic operation: Error during calculation for {column}: {e}")
+
     print("Sum:", total, "\tAverage", average, "\tMinimum", mini, "\tMaximum ", maxi)
 
 # pd1 = [[1, "pratham", 21], [2, "nikhil", 22], [3, "adarsh", 22], [4, "satyam", 23]]
