@@ -23,6 +23,14 @@ def format_delim(delim):
 
 @app.command()
 def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
+    if filename == '':
+        print("No file has been chosen")
+        return
+    extension = filename[-4:]
+    if extension != ".csv" and extension != ".tsv":
+        print("Incorrect file format specified, please add a pandas/csv supported file")
+        return
+    
     df = filtering(filename, conditions)
     print(df)
     df = pd.DataFrame(df)
@@ -32,6 +40,14 @@ def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
 
 @app.command()
 def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
+    if filepath == '':
+        print("No file has been chosen")
+        return
+    extension = filepath[-4:]
+    if extension != ".csv" and extension != ".tsv":
+        print("Incorrect file format specified, please add a pandas/csv supported file")
+        return
+
     df = aggregating(filepath, column)
     df = pd.DataFrame(df)
     delim = format_delim(delim)
@@ -42,6 +58,14 @@ def aggregate(filepath:str, column:str, delim:str=',', quoting:int=0):
 @app.command()
 def format(filepath:str, column:str, delim:str=',', quoting:int=0):
     # aggregating(filepath, column)
+    if filepath == '':
+        print("No file has been chosen")
+        return
+    extension = filepath[-4:]
+    if extension != ".csv" and extension != ".tsv":
+        print("Incorrect file format specified, please add a pandas/csv supported file")
+        return
+    
     df = formatting(filepath, column)
     print(df)
     df = pd.DataFrame(df)
@@ -51,8 +75,15 @@ def format(filepath:str, column:str, delim:str=',', quoting:int=0):
 
 @app.command()
 def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
-    # aggregating(filepath1, column)
-    # paths = [filepath1, filepath2]
+    if len(paths) == 0:
+        print("No file path specified")
+        return
+    for path in paths:
+        extension = path[-4:]
+        if extension != ".csv" and extension != ".tsv":
+            print("Incorrect file format specified, please add a pandas/csv supported file")
+            return
+
     df = joining(paths, column)
     if type(df) == type(0):
         return
@@ -61,17 +92,6 @@ def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
     delim = format_delim(delim)
     df.to_csv('output.csv', sep=delim, quoting=quoting)
 
-
-@app.command()
-def hello(name: str, age:int, display_age:bool=True):
-    print(f"Hello {name}")
-    if display_age:
-        print(f"Age {age}")
-    # print(f"Age {age}")
-
-@app.command()
-def goodbye():
-    print("Goodbye")
 
 if __name__ == "__main__":
     app()
