@@ -40,6 +40,8 @@ def filter(filename:str, conditions:list[str], delim:str=',', quoting:int=0):
         return
     
     df = filtering(filename, conditions)
+    if df == 0:
+        return
     print(df)
     df = pd.DataFrame(df)
     delim = format_delim(delim)
@@ -60,6 +62,8 @@ def aggregate(filepath:str, columns:list[str], delim:str=',', quoting:int=0):
         return
 
     df = aggregating(filepath, columns)
+    if df == 0:
+        return
     df = pd.DataFrame(df)
     delim = format_delim(delim)
 
@@ -80,6 +84,8 @@ def format(filepath:str, columns:list[str], delim:str=',', quoting:int=0):
         return
     
     df = formatting(filepath, columns)
+    if df == 0:
+        return
     print(df)
     df = pd.DataFrame(df)
     delim = format_delim(delim)
@@ -101,6 +107,8 @@ def join(column:str, paths:list[str], delim:str=',', quoting:int=0):
             return
 
     df = joining(paths, column)
+    if df == 0:
+        return
     if type(df) == type(0):
         return
     print(df)
